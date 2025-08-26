@@ -15,9 +15,7 @@ function App() {
 
     try {
       // Get main analysis
-      const mainResponse = await axios.post('/api/analyze', {
-        file_path: filePath
-      });
+      const mainResponse = await axios.get('/api/analyze');
 
       if (!mainResponse.data.success) {
         throw new Error(mainResponse.data.error || 'Main analysis failed');
@@ -124,20 +122,7 @@ function App() {
         {/* Analysis Controls */}
         <div className="card">
           <h2>Generate Analysis Report</h2>
-          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', marginBottom: '1rem' }}>
-            <input
-              type="text"
-              value={filePath}
-              onChange={(e) => setFilePath(e.target.value)}
-              placeholder="Enter HAR file path"
-              style={{
-                flex: 1,
-                padding: '12px',
-                border: '1px solid #ddd',
-                borderRadius: '6px',
-                fontSize: '1rem'
-              }}
-            />
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '1rem' }}>
             <button
               className="button"
               onClick={generateReport}
@@ -145,7 +130,16 @@ function App() {
               style={{ 
                 backgroundColor: '#28a745',
                 fontSize: '1.1rem',
-                padding: '14px 28px'
+                padding: '16px 40px',
+                borderRadius: '8px',
+                border: 'none',
+                color: 'white',
+                cursor: loading ? 'not-allowed' : 'pointer',
+                opacity: loading ? 0.7 : 1,
+                minWidth: '250px',
+                fontWeight: '600',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                transition: 'all 0.2s ease'
               }}
             >
               {loading ? 'Generating Report...' : '📊 Generate Report'}
@@ -177,7 +171,7 @@ function App() {
           <>
             {/* Executive Summary */}
             <div className="card">
-              <h2>📋 Executive Summary</h2>
+              <h2> Summary</h2>
               <div className="stats-grid">
                 <StatCard
                   number={report.summary.total_requests.toLocaleString()}
@@ -404,7 +398,6 @@ function App() {
             {/* Report Info */}
             <div className="card">
               <h2>📄 Report Information</h2>
-              <p><strong>File:</strong> {report.analysis_info.file_path}</p>
               <p><strong>Generated at:</strong> {new Date(report.analysis_info.timestamp).toLocaleString()}</p>
              
             </div>
